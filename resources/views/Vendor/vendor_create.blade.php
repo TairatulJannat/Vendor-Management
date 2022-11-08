@@ -96,25 +96,25 @@
                     <div class="mb-3">
                         <label for="InputName" class="form-label" style="margin-right:90%;">Name</label>
                         <input type="text" class="form-control" name="name" id="editInputName">
-                        <span class="text-danger" id="nameErrorMsg"></span>
+                        <span class="text-danger" id="EditnameErrorMsg"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="InputEmail" class="form-label" style="margin-right:80%;">Email address</label>
                         <input type="email" class="form-control" name="email" id="editInputEmail">
-                        <span class="text-danger" id="emailErrorMsg"></span>
+                        <span class="text-danger" id="EditemailErrorMsg"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="InputMobile" class="form-label" style="margin-right:80%;">Phone Number</label>
                         <input type="number" class="form-control" name="phone" id="editInputMobile">
-                        <span class="text-danger" id="mobileErrorMsg"></span>
+                        <span class="text-danger" id="EditmobileErrorMsg"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="InputAddress" class="form-label" style="margin-right:80%;">Office Address</label>
                         <input type="text" class="form-control" name="address" id="editInputAddress">
-                        <span class="text-danger" id="addressErrorMsg"></span>
+                        <span class="text-danger" id="EditaddressErrorMsg"></span>
                     </div>
 
 
@@ -143,7 +143,7 @@
             }
         });
     })
-  
+
     function vendor_edit(id) {
         let vendor_id = id;
         $.ajax({
@@ -180,16 +180,20 @@
             cache: false,
             success: function(response) {
                 $('#UpdateModalForm')[0].reset();
+                $('#EditnameErrorMsg').empty();
+                $('#EditemailErrorMsg').empty();
+                $('#EditmobileErrorMsg').empty();
+                $('#EditaddressErrorMsg').empty();
                 location.reload();
                 // $('#editModal').modal('hide');
 
             },
             error: function(response) {
                 console.log(response);
-                $('#nameErrorMsg').text(response.responseJSON.errors.name);
-                $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                $('#mobileErrorMsg').text(response.responseJSON.errors.phone);
-                $('#addressErrorMsg').text(response.responseJSON.errors.address);
+                $('#EditnameErrorMsg').text(response.responseJSON.errors.name);
+                $('#EditemailErrorMsg').text(response.responseJSON.errors.email);
+                $('#EditmobileErrorMsg').text(response.responseJSON.errors.phone);
+                $('#EditaddressErrorMsg').text(response.responseJSON.errors.address);
             },
         })
     });
@@ -202,6 +206,10 @@
             success: function(response) {
                 $('#successMsg').show();
                 $('#SubmitForm')[0].reset();
+                $('#nameErrorMsg').empty();
+                $('#emailErrorMsg').empty();
+                $('#mobileErrorMsg').empty();
+                $('#addressErrorMsg').empty();
                 if (response.status == true) {
                     console.log(response.data);
                 }
