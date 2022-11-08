@@ -92,6 +92,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        var i = 0;
         $('#itemqnty').keyup(function() {
             tot_price();
         })
@@ -134,7 +135,7 @@
                             response.purchase.item_quantity + "</td><td>" +
                             response.purchase.unit_price + "</td><td>" +
                             response.purchase.total_price + "</td>");
-                    location.reload();
+                    // location.reload();
                     $(".purchasestable").append(row);
 
                 },

@@ -70,7 +70,7 @@
                 <td>{{$vendor->address}}</td>
                 <td style="width: 150px">
                     <a class="btn btn-sm btn-info" onclick="vendor_edit('{{$vendor->id}}')" data-toggle="modal" data-target="#editModal">Edit</a>
-                    <button class=" btn btn-sm btn-danger deleteRecord" data-id="{{ $vendor->id }}">Delete </button>
+                    <button class="btn btn-sm btn-danger deleteRecord" data-id="{{ $vendor->id }}">Delete </button>
                 </td>
             </tr>
             @endforeach
@@ -131,6 +131,19 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+    $(document).on('click', '.deleteRecord', function(e) {
+        e.preventDefault;
+        var id = $(this).data("id");
+        // alert(id);
+        jQuery.ajax({
+            url: "{{url('/delete-form')}}" + "/" + id,
+            success: function() {
+                console.log("it Works");
+                location.reload();
+            }
+        });
+    })
+  
     function vendor_edit(id) {
         let vendor_id = id;
         $.ajax({
@@ -201,9 +214,9 @@
                         response.vendor.name + "</td><td>" +
                         response.vendor.email + "</td><td>" +
                         response.vendor.phone + "</td><td>" +
-                        response.vendor.address + "</td><td style='width: 150 px'> <a class ='btn-sm btn-info' onclick = 'vendor_edit('" + response.vendor.id + "')'data-toggle ='modal' data-target = '#editModal'> Edit </a> &nbsp&nbsp <button class = 'btn btn-sm btn-danger deleteRecord' data-id ='" + response.vendor.id + "'>Delete</button></td>");
-                location.reload();
-                $(".showtable").append(row);
+                        response.vendor.address + "</td><td style='width: 150 px'> <a class ='btn-sm btn-info' onclick = '" + vendor_edit(response.vendor.id) + "'data-toggle ='modal' data-target = '#editModal'> Edit </a> &nbsp&nbsp <button class='deleteRecord btn btn-sm btn-danger' data-id ='" + response.vendor.id + "'>Delete</button></td>");
+                // location.reload();
+
 
 
             },
@@ -215,22 +228,5 @@
                 $('#addressErrorMsg').text(response.responseJSON.errors.address);
             },
         });
-    });
-
-    $(document).ready(function() {
-        $(".deleteRecord").click(function() {
-            var id = $(this).data("id");
-            // alert(id);
-            jQuery.ajax({
-                url: "{{url('/delete-form')}}" + "/" + id,
-                success: function() {
-                    console.log("it Works");
-                    location.reload();
-                }
-            });
-
-        });
-
-
     });
 </script>
