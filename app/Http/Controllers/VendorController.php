@@ -10,8 +10,14 @@ class VendorController extends Controller
     //
     public function create()
     {
+
+        return view('Vendor.vendor_create');
+    }
+
+    public function getVendors()
+    {
         $vendors = Vendor::orderBy('id', 'desc')->get();
-        return view('Vendor.vendor_create', compact('vendors'));
+        return response()->json(['vendors' => $vendors]);
     }
 
 

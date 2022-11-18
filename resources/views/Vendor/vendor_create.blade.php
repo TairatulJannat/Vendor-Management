@@ -1,5 +1,4 @@
-@include('welcome')
-<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+@include('home')
 
 <div class="card text-center" style="width: 50%;margin-left:300px; margin-top:20px">
     <div class="card-header">
@@ -44,7 +43,7 @@
 
 
 </div>
-<div class="card-body">
+<div class="card-body" class="card-body" style="margin-block: 5px;padding: 110px;">
 
     <table class="table table-striped" id="showtable">
         <?php
@@ -61,35 +60,22 @@
             </tr>
         </thead>
         <tbody class="showtable">
-            @foreach( $vendors as $vendor)
-            <tr>
-                <th scope="row">{{$i++}}</th>
-                <td>{{$vendor->name}}</td>
-                <td>{{$vendor->email}}</td>
-                <td>{{$vendor->phone}}</td>
-                <td>{{$vendor->address}}</td>
-                <td style="width: 150px">
-                    <a class="btn btn-sm btn-info" onclick="vendor_edit('{{$vendor->id}}')" data-toggle="modal" data-target="#editModal">Edit</a>
-                    <button class="btn btn-sm btn-danger deleteRecord" data-id="{{ $vendor->id }}">Delete </button>
-                </td>
-            </tr>
-            @endforeach
+
 
         </tbody>
     </table>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Edit Information</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
                 <form id="UpdateModalForm">
                     @csrf
                     <input type="hidden" id="edit_vendor_id" value="">
@@ -120,121 +106,157 @@
 
 
                     <button type="submit" class="btn btn-primary">Update</button>
-                    <div class="modal-footer">
+                    <!-- <div class="modal-footer">
                         <a class="btn btn-secondary" data-dismiss="modal">Close</a>
-                    </div>
+                    </div> -->
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-    $(document).on('click', '.deleteRecord', function(e) {
-        e.preventDefault;
-        var id = $(this).data("id");
-        // alert(id);
-        jQuery.ajax({
-            url: "{{url('/delete-form')}}" + "/" + id,
-            success: function() {
-                console.log("it Works");
-                location.reload();
-            }
-        });
-    })
+    $(document).ready(function() {
+        getData();
 
-    function vendor_edit(id) {
-        let vendor_id = id;
-        $.ajax({
-            url: "{{url('/edit-form')}}" + "/" + vendor_id,
-            success: function(data) {
-                $('#edit_vendor_id').empty();
-                $('#editInputName').empty();
-                $('#editInputEmail').empty();
-                $('#editInputMobile').empty();
-                $('#editInputAddress').empty();
+        function getData() {
+            $.ajax({
+                url: "{{url('/getVendor')}}",
+                type: 'GET',
+                dataType: "json",
+                success: function(res) {
+                    console.log(res);
+                    $('.showtable').html('');
+                    $.each(res.vendors, function(key, vendor) {
+                        $('.showtable').append('<tr>\
+                        <th scope="row">' + ++key + '</th>\
+                         <td>' + vendor.name + '</td>\
+                         <td>' + vendor.email + '</td>\
+                         <td>' + vendor.phone + '</td>\
+                         <td>' + vendor.address + '</td>\
+                         <td> <button type="button" class="btn btn-sm btn-info edit_vendor" value="' + vendor.id + '" data-bs-toggle="modal" data-bs-target="#exampleModal"> Edit </button>\
+                          <button type="button" class="btn btn-sm btn-danger delete_vendor" value="' + vendor.id + '" > Delete </button></td>\
+                        '
 
-                $('#edit_vendor_id').val(vendor_id);
-                $('#editInputName').val(data.vendor.name);
-                $('#editInputEmail').val(data.vendor.email);
-                $('#editInputMobile').val(data.vendor.phone);
-                $('#editInputAddress').val(data.vendor.address);
+                        )
+                    });
+                },
+                error: function(err) {
 
-            }
-        });
+                },
+            })
+        }
 
 
-    }
-
-    $('#UpdateModalForm').submit(function(e) {
-        e.preventDefault();
-        let id = $('#edit_vendor_id').val();
-        let formData = new FormData(this);
-        jQuery.ajax({
-            type: "POST",
-            url: "{{url('/update-form')}}" + "/" + id,
-            data: formData,
-            contentType: false,
-            processData: false,
-            cache: false,
-            success: function(response) {
-                $('#UpdateModalForm')[0].reset();
-                $('#EditnameErrorMsg').empty();
-                $('#EditemailErrorMsg').empty();
-                $('#EditmobileErrorMsg').empty();
-                $('#EditaddressErrorMsg').empty();
-                location.reload();
-                // $('#editModal').modal('hide');
-
-            },
-            error: function(response) {
-                console.log(response);
-                $('#EditnameErrorMsg').text(response.responseJSON.errors.name);
-                $('#EditemailErrorMsg').text(response.responseJSON.errors.email);
-                $('#EditmobileErrorMsg').text(response.responseJSON.errors.phone);
-                $('#EditaddressErrorMsg').text(response.responseJSON.errors.address);
-            },
-        })
-    });
-    $('#SubmitForm').on('submit', function(e) {
-        e.preventDefault();
-        jQuery.ajax({
-            url: "{{url('/submit-form')}}",
-            type: "POST",
-            data: jQuery('#SubmitForm').serialize(),
-            success: function(response) {
-                $('#successMsg').show();
-                $('#SubmitForm')[0].reset();
-                $('#nameErrorMsg').empty();
-                $('#emailErrorMsg').empty();
-                $('#mobileErrorMsg').empty();
-                $('#addressErrorMsg').empty();
-                if (response.status == true) {
-                    console.log(response.data);
+        $(document).on('click', '.delete_vendor', function(e) {
+            e.preventDefault();
+            // alert('Are you sure? ');
+            var id = $(this).val();
+            // alert(id);
+            jQuery.ajax({
+                url: "{{url('/delete-form')}}" + "/" + id,
+                success: function() {
+                    console.log("it Works");
+                    getData();
                 }
+            });
+        })
+
+        $(document).on('click', '.edit_vendor', function(e) {
+            e.preventDefault;
+
+            var vendor_id = $(this).val();
+            // alert(vendor_id);
+            $.ajax({
+                url: "{{url('/edit-form')}}" + "/" + vendor_id,
+                success: function(data) {
+                    console.log(data);
+                    $('#edit_vendor_id').empty();
+                    $('#editInputName').empty();
+                    $('#editInputEmail').empty();
+                    $('#editInputMobile').empty();
+                    $('#editInputAddress').empty();
+
+                    $('#edit_vendor_id').val(vendor_id);
+                    $('#editInputName').val(data.vendor.name);
+                    $('#editInputEmail').val(data.vendor.email);
+                    $('#editInputMobile').val(data.vendor.phone);
+                    $('#editInputAddress').val(data.vendor.address);
+
+                }
+            });
+        })
 
 
-                $(".showtable")
-                    .prepend('<tr/>')
-                    .children('tr:first')
-                    .append("<th>0</th><td>" +
-                        response.vendor.name + "</td><td>" +
-                        response.vendor.email + "</td><td>" +
-                        response.vendor.phone + "</td><td>" +
-                        response.vendor.address + "</td><td style='width: 150 px'> <a class ='btn-sm btn-info' onclick = '" + vendor_edit(response.vendor.id) + "'data-toggle ='modal' data-target = '#editModal'> Edit </a> &nbsp&nbsp <button class='deleteRecord btn btn-sm btn-danger' data-id ='" + response.vendor.id + "'>Delete</button></td>");
-                // location.reload();
+
+        $('#UpdateModalForm').submit(function(e) {
+            e.preventDefault();
+            let id = $('#edit_vendor_id').val();
+            let formData = new FormData(this);
+            jQuery.ajax({
+                type: "POST",
+                url: "{{url('/update-form')}}" + "/" + id,
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(response) {
+                    $('#UpdateModalForm')[0].reset();
+                    $('#EditnameErrorMsg').empty();
+                    $('#EditemailErrorMsg').empty();
+                    $('#EditmobileErrorMsg').empty();
+                    $('#EditaddressErrorMsg').empty();
+                    // location.reload();
+                    $('#exampleModal').modal('hide');
+                    getData();
+
+                },
+                error: function(response) {
+                    console.log(response);
+                    $('#EditnameErrorMsg').text(response.responseJSON.errors.name);
+                    $('#EditemailErrorMsg').text(response.responseJSON.errors.email);
+                    $('#EditmobileErrorMsg').text(response.responseJSON.errors.phone);
+                    $('#EditaddressErrorMsg').text(response.responseJSON.errors.address);
+                },
+            })
+        });
+
+
+        $('#SubmitForm').on('submit', function(e) {
+            e.preventDefault();
+            jQuery.ajax({
+                url: "{{url('/submit-form')}}",
+                type: "POST",
+                data: jQuery('#SubmitForm').serialize(),
+                success: function(response) {
+                    $('#successMsg').show();
+                    $('#SubmitForm')[0].reset();
+                    $('#nameErrorMsg').empty();
+                    $('#emailErrorMsg').empty();
+                    $('#mobileErrorMsg').empty();
+                    $('#addressErrorMsg').empty();
+                    if (response.status == true) {
+                        console.log(response.vendor);
+                        getData();
+                    }
 
 
 
-            },
-            error: function(response) {
-                console.log(response);
-                $('#nameErrorMsg').text(response.responseJSON.errors.name);
-                $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                $('#mobileErrorMsg').text(response.responseJSON.errors.phone);
-                $('#addressErrorMsg').text(response.responseJSON.errors.address);
-            },
+
+
+                },
+                error: function(response) {
+                    console.log(response);
+                    $('#nameErrorMsg').text(response.responseJSON.errors.name);
+                    $('#emailErrorMsg').text(response.responseJSON.errors.email);
+                    $('#mobileErrorMsg').text(response.responseJSON.errors.phone);
+                    $('#addressErrorMsg').text(response.responseJSON.errors.address);
+                },
+            });
         });
     });
 </script>
