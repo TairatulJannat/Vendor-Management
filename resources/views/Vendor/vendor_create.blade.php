@@ -25,7 +25,7 @@
 
             <div class="mb-3">
                 <label for="InputMobile" class="form-label" style="margin-right:80%;">Phone Number</label>
-                <input type="number" class="form-control" name="phone" id="InputMobile">
+                <input type="phone" class="form-control" name="phone" id="InputMobile">
                 <span class="text-danger" id="mobileErrorMsg"></span>
             </div>
 
@@ -93,7 +93,7 @@
 
                     <div class="mb-3">
                         <label for="InputMobile" class="form-label" style="margin-right:80%;">Phone Number</label>
-                        <input type="number" class="form-control" name="phone" id="editInputMobile">
+                        <input type="phone" class="form-control" name="phone" id="editInputMobile">
                         <span class="text-danger" id="EditmobileErrorMsg"></span>
                     </div>
 

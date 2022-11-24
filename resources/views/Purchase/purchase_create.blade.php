@@ -1,6 +1,6 @@
 @include('home')
 
-<style>    
+<!-- <style>    
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -9,7 +9,7 @@
     input[type=number] {
         -moz-appearance: textfield;
     }
-</style>
+</style> -->
 
 <div class="card text-center" style="width: 50%;margin-left:300px; margin-top:20px">
     <div class="card-header">
@@ -30,13 +30,13 @@
 
             <div class="mb-3">
                 <label for="InputEmail" class="form-label" style="margin-right:80%;"><b>Item Quantity</b></label>
-                <input type="number" class="form-control" name="item_quantity" id="itemqnty">
+                <input type="number" class="form-control" name="item_quantity" id="itemqnty" min="0">
                 <span class="text-danger" id="emailErrorMsg"></span>
             </div>
 
             <div class="mb-3">
                 <label for="InputMobile" class="form-label" style="margin-right:80%;"><b>Unit Price</b></label>
-                <input type="number" class="form-control" name="unit_price" id="unit_price">
+                <input type="number" class="form-control" name="unit_price" id="unit_price" min="0">
                 <span class="text-danger" id="mobileErrorMsg"></span>
             </div>
 
@@ -113,13 +113,13 @@
 
                     <div class="mb-3">
                         <label for="InputEmail" class="form-label" style="margin-right:80%;"><b>Item Quantity</b></label>
-                        <input type="number" class="form-control" name="item_quantity" id="EditItemqnty">
+                        <input type="number" class="form-control" name="item_quantity" id="EditItemqnty" min="0">
                         <span class="text-danger" id="emailErrorMsg"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="InputMobile" class="form-label" style="margin-right:80%;"><b>Unit Price</b></label>
-                        <input type="number" class="form-control" name="unit_price" id="EditUnitPrice">
+                        <input type="number" class="form-control" name="unit_price" id="EditUnitPrice" min="0">
                         <span class="text-danger" id="mobileErrorMsg"></span>
                     </div>
 
@@ -202,15 +202,15 @@
             });
         })
 
+        $("#itemqnty").on('keyup change', function() {
+            tot_price();
+        });
+        $("#unit_price").on('keyup change', function() {
+            tot_price();
+        });
 
 
-        var i = 0;
-        $('#itemqnty').keyup(function() {
-            tot_price();
-        })
-        $('#unit_price').keyup(function() {
-            tot_price();
-        })
+
 
         function tot_price() {
             let quantity = $('#itemqnty').val();
@@ -258,15 +258,14 @@
             });
         })
 
-        var i = 0;
-        $('#EditItemqnty').keyup(function() {
-            tot_price_edit()
 
-        })
-        $('#EditUnitPrice').keyup(function() {
-            tot_price_edit()
 
-        })
+        $("#EditItemqnty").on('keyup change', function() {
+            tot_price_edit();
+        });
+        $("#EditUnitPrice").on('keyup change', function() {
+            tot_price_edit();
+        });
 
         function tot_price_edit() {
             let quantity = $('#EditItemqnty').val();
